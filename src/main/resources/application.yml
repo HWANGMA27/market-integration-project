@@ -1,0 +1,9 @@
+url:
+  bithumb:
+    base: https://api.bithumb.com
+    user:
+      transactions: /info/user_transactions
+    exchange:
+      ticker: /public/ticker
+      status: /public/assetsstatus/multichain
+      network: /public/network-info
