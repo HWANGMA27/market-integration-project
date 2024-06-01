@@ -13,6 +13,11 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 public class PrivateRequestRouter {
     @Bean
     public RouterFunction<ServerResponse> accountInfoRoute(PrivateRequestHandler requestHandler) {
-        return RouterFunctions.route(GET("/account-info"), requestHandler::getAccountInfo);
+        return RouterFunctions.route(GET("/info/account"), requestHandler::getAccountInfo);
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> userTransactionsRoute(PrivateRequestHandler requestHandler) {
+        return RouterFunctions.route(GET("/info/transactions"), requestHandler::getTransactions);
     }
 }
