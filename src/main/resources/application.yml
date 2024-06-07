@@ -11,4 +11,5 @@ url:
       status: /public/assetsstatus/multichain
       network: /public/network-info
       trade: /trade/place
+      orderBook: /public/orderbook
 

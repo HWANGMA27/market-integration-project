@@ -13,13 +13,16 @@ public class PublicRequestHandler {
     private final String API_TICKER_URL;
     private final String API_STATUS_URL;
     private final String API_NETWORK_URL;
+    private final String API_ORDERBOOK_URL;
 
     public PublicRequestHandler(WebClient.Builder webClientBuilder,
                                 @Value("${url.bithumb.base}") String baseUrl, @Value("${url.bithumb.exchange.ticker}") String tickerUrl,
-                                @Value("${url.bithumb.exchange.status}") String statusUrl, @Value("${url.bithumb.exchange.status}") String networkUrl) {
+                                @Value("${url.bithumb.exchange.status}") String statusUrl, @Value("${url.bithumb.exchange.status}") String networkUrl,
+                                @Value("${url.bithumb.exchange.orderBook}") String orderBookUrl) {
         this.API_TICKER_URL = tickerUrl;
         this.API_STATUS_URL = statusUrl;
         this.API_NETWORK_URL = networkUrl;
+        this.API_ORDERBOOK_URL = orderBookUrl;
         this.webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
@@ -46,6 +49,18 @@ public class PublicRequestHandler {
     public Mono<ServerResponse> getNetworkStatus(ServerRequest request) {
         return this.webClient.get()
                 .uri(API_NETWORK_URL)
+                .retrieve()
+                .bodyToMono(String.class)
+                .flatMap(response -> ServerResponse.ok().body(Mono.just(response), String.class))
+                .onErrorResume(e -> ServerResponse.status(500).body(Mono.just("Error: " + e.getMessage()), String.class));
+    }
+
+    public Mono<ServerResponse> getOrderBook(ServerRequest request) {
+        String cryptocurrency = request.pathVariable("cryptocurrency");
+        String paymentCurrency = request.pathVariable("paymentCurrency");
+        String requestUrl = API_ORDERBOOK_URL.concat("/").concat(cryptocurrency).concat("_").concat(paymentCurrency);
+        return this.webClient.get()
+                .uri(requestUrl)
                 .retrieve()
                 .bodyToMono(String.class)
                 .flatMap(response -> ServerResponse.ok().body(Mono.just(response), String.class))

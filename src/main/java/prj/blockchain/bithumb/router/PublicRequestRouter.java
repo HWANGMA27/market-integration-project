@@ -26,4 +26,9 @@ public class PublicRequestRouter {
     public RouterFunction<ServerResponse> networkInfoRoute(PublicRequestHandler requestHandler) {
         return RouterFunctions.route(GET("/status/{cryptocurrency}"), requestHandler::getNetworkStatus);
     }
+
+    @Bean
+    public RouterFunction<ServerResponse> orderBookoRoute(PublicRequestHandler requestHandler) {
+        return RouterFunctions.route(GET("/orderbook/{cryptocurrency}/{paymentCurrency}"), requestHandler::getOrderBook);
+    }
 }
