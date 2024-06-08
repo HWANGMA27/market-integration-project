@@ -12,4 +12,5 @@ url:
       network: /public/network-info
       trade: /trade/place
       orderBook: /public/orderbook
+      price: /public/ticker
 

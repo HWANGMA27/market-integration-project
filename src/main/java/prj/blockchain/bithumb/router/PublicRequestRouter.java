@@ -31,4 +31,9 @@ public class PublicRequestRouter {
     public RouterFunction<ServerResponse> orderBookoRoute(PublicRequestHandler requestHandler) {
         return RouterFunctions.route(GET("/orderbook/{cryptocurrency}/{paymentCurrency}"), requestHandler::getOrderBook);
     }
+
+    @Bean
+    public RouterFunction<ServerResponse> currencyPriceRoute(PublicRequestHandler requestHandler) {
+        return RouterFunctions.route(GET("/price/{cryptocurrency}/{paymentCurrency}"), requestHandler::getOrderBook);
+    }
 }
