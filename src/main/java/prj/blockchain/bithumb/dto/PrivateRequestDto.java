@@ -12,7 +12,8 @@ public class PrivateRequestDto extends ApiCredentialsDto {
     private String paymentCurrency;
 
     @Builder
-    public PrivateRequestDto(String apiKey, String secretKey, String orderCurrency, String paymentCurrency) {
+    public PrivateRequestDto(String apiKey, String secretKey,
+                             String orderCurrency, String paymentCurrency) {
         super(apiKey, secretKey);
         this.orderCurrency = orderCurrency;
         this.paymentCurrency = paymentCurrency;
@@ -22,8 +23,8 @@ public class PrivateRequestDto extends ApiCredentialsDto {
         return PrivateRequestDto.builder()
                 .apiKey(request.headers().firstHeader("api-key"))
                 .secretKey(request.headers().firstHeader("api-secret"))
-                .orderCurrency(request.queryParam("order-currency").orElse(""))
-                .paymentCurrency(request.queryParam("payment-currency").orElse(""))
+                .orderCurrency(request.queryParam("orderCurrency").orElse(""))
+                .paymentCurrency(request.queryParam("paymentCurrency").orElse(""))
                 .build();
     }
 }

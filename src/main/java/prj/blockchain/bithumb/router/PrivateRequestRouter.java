@@ -20,4 +20,14 @@ public class PrivateRequestRouter {
     public RouterFunction<ServerResponse> userTransactionsRoute(PrivateRequestHandler requestHandler) {
         return RouterFunctions.route(GET("/info/transactions"), requestHandler::getTransactions);
     }
+
+    @Bean
+    public RouterFunction<ServerResponse> userOrderInfoRoute(PrivateRequestHandler requestHandler) {
+        return RouterFunctions.route(GET("/info/orders/{cryptocurrency}"), requestHandler::getOrderList);
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> userOrderDetailInfoRoute(PrivateRequestHandler requestHandler) {
+        return RouterFunctions.route(GET("/info/orders/{cryptocurrency}/{orderid}"), requestHandler::getOrderDetail);
+    }
 }
