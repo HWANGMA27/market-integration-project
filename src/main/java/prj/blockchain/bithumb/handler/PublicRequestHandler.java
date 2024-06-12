@@ -80,4 +80,15 @@ public class PublicRequestHandler {
                 .flatMap(response -> ServerResponse.ok().body(Mono.just(response), String.class))
                 .onErrorResume(e -> ServerResponse.status(500).body(Mono.just("Error: " + e.getMessage()), String.class));
     }
+
+    public Mono<ServerResponse> getMinWithdrawAmount(ServerRequest request) {
+        String cryptocurrency = request.pathVariable("cryptocurrency");
+        String requestUrl = API_PRICE_URL.concat("/").concat(cryptocurrency);
+        return this.webClient.get()
+                .uri(requestUrl)
+                .retrieve()
+                .bodyToMono(String.class)
+                .flatMap(response -> ServerResponse.ok().body(Mono.just(response), String.class))
+                .onErrorResume(e -> ServerResponse.status(500).body(Mono.just("Error: " + e.getMessage()), String.class));
+    }
 }
