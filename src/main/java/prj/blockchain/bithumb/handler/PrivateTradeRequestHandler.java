@@ -14,11 +14,14 @@ import java.util.HashMap;
 public class PrivateTradeRequestHandler {
     private final ApiClient apiClient;
     private final String USER_TRADE_PLACE_URL;
+    private final String USER_ORDER_CANCEL_URL;
 
     public PrivateTradeRequestHandler(ApiClient apiClient,
-                                 @Value("${url.bithumb.exchange.trade}") String tradePalaceUrl) {
+                                 @Value("${url.bithumb.exchange.trade}") String tradePalaceUrl,
+                                 @Value("${url.bithumb.exchange.trade-cancel}") String tradeCancelUrl) {
         this.apiClient = apiClient;
         this.USER_TRADE_PLACE_URL = tradePalaceUrl;
+        this.USER_ORDER_CANCEL_URL = tradeCancelUrl;
     }
 
     public Mono<ServerResponse> placeOrder(ServerRequest request) {
@@ -43,7 +46,7 @@ public class PrivateTradeRequestHandler {
         params.put("order_currency", requestDto.getOrderCurrency());
         params.put("payment_currency", requestDto.getOrderCurrency());
         apiClient.setAccessInfo(requestDto.getApiKey(), requestDto.getSecretKey());
-        String response = apiClient.callApi(USER_TRADE_PLACE_URL, params);
+        String response = apiClient.callApi(USER_ORDER_CANCEL_URL, params);
         return ServerResponse.ok().body(Mono.just(response), String.class);
     }
 }
