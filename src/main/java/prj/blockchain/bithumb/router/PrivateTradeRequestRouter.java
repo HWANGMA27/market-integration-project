@@ -15,4 +15,9 @@ public class PrivateTradeRequestRouter {
     public RouterFunction<ServerResponse> tradeRoute(PrivateTradeRequestHandler requestHandler) {
         return RouterFunctions.route(POST("/trade/order"), requestHandler::placeOrder);
     }
+
+    @Bean
+    public RouterFunction<ServerResponse> cancelOrderRoute(PrivateTradeRequestHandler requestHandler) {
+        return RouterFunctions.route(POST("/order/{orderid}/cancel"), requestHandler::cancelOrder);
+    }
 }

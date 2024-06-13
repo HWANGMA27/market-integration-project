@@ -12,6 +12,7 @@ url:
       status: /public/assetsstatus/multichain
       network: /public/network-info
       trade: /trade/place
+      trade-cancel: /trade/cancel
       orderBook: /public/orderbook
       price: /public/ticker
 

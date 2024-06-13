@@ -25,10 +25,23 @@ public class PrivateTradeRequestHandler {
         PrivateTradeRequestDto requestDto = PrivateTradeRequestDto.fromRequest(request);
         HashMap<String, String> params = new HashMap<>();
         params.put("order_currency", requestDto.getOrderCurrency());
-        params.put("payment-currency", requestDto.getOrderCurrency());
+        params.put("payment_currency", requestDto.getOrderCurrency());
         params.put("price", requestDto.getPrice());
         params.put("units", requestDto.getUnits());
         params.put("type", requestDto.getType());
+        apiClient.setAccessInfo(requestDto.getApiKey(), requestDto.getSecretKey());
+        String response = apiClient.callApi(USER_TRADE_PLACE_URL, params);
+        return ServerResponse.ok().body(Mono.just(response), String.class);
+    }
+
+    public Mono<ServerResponse> cancelOrder(ServerRequest request) {
+        PrivateTradeRequestDto requestDto = PrivateTradeRequestDto.fromRequest(request);
+        HashMap<String, String> params = new HashMap<>();
+        String orderId = request.pathVariable("orderid");
+        params.put("type", requestDto.getType());
+        params.put("order_id", orderId);
+        params.put("order_currency", requestDto.getOrderCurrency());
+        params.put("payment_currency", requestDto.getOrderCurrency());
         apiClient.setAccessInfo(requestDto.getApiKey(), requestDto.getSecretKey());
         String response = apiClient.callApi(USER_TRADE_PLACE_URL, params);
         return ServerResponse.ok().body(Mono.just(response), String.class);
