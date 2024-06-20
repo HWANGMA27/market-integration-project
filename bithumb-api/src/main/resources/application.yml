@@ -16,3 +16,6 @@ url:
       orderBook: /public/orderbook
       price: /public/ticker
 
+server:
+  port: 8080
+

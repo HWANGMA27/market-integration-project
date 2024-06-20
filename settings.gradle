@@ -1,1 +1,3 @@
 rootProject.name = 'bithumb'
+include 'bithumb-api'
+include 'spring-scheduler'
