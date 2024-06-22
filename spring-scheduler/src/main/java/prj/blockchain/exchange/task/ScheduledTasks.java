@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ScheduledTasks {
-    @Scheduled(cron = "* *  * * ?")
+    @Scheduled(cron = "*/10 * * * * ?")
     public void reportCurrentTimeWithCron() {
         System.out.println("The time is now " + new java.util.Date());
     }
