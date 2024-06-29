@@ -41,4 +41,9 @@ public class PublicRequestRouter {
     public RouterFunction<ServerResponse> currencyWithdrawMin(PublicRequestHandler requestHandler) {
         return RouterFunctions.route(GET("/withdraw/{cryptocurrency}/min"), requestHandler::getMinWithdrawAmount);
     }
+
+    @Bean
+    public RouterFunction<ServerResponse> networkInfo(PublicRequestHandler requestHandler) {
+        return RouterFunctions.route(GET("/networks/info"), requestHandler::getNetworkInfo);
+    }
 }
