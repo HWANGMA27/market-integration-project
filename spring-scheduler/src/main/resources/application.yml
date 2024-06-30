@@ -2,7 +2,10 @@ server:
   port: 8083
 
 scheduler:
-  cron: "* 0/1 * * * *"
+  daily-check: "0 0 0 * * *"
+  hourly-check: "0 0 * * * *"
+  minute-check: "0 * * * * *"
+  sec-check: "0/20 * * * * *"
 
 api:
     base-url: http://localhost:8080
