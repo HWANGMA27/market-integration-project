@@ -8,6 +8,8 @@ api:
     base-url: http://localhost:8080
     endpoint:
       price: /price
+      network-status: /status
+
 spring:
   datasource:
     url: jdbc:h2:file:~/testdb;AUTO_SERVER=TRUE
