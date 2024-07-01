@@ -3,6 +3,7 @@ url:
     base: https://api.bithumb.com
     user:
       info: /info/account
+      balance: /info/balance
       transactions: /info/user_transactions
       orders: /info/orders
       order-detail: /info/order_detail

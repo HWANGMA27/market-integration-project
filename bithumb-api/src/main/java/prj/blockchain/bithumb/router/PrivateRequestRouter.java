@@ -17,6 +17,11 @@ public class PrivateRequestRouter {
     }
 
     @Bean
+    public RouterFunction<ServerResponse> balanceInfoRoute(PrivateRequestHandler requestHandler) {
+        return RouterFunctions.route(GET("/info/balance/{cryptocurrency}"), requestHandler::getBalanceInfo);
+    }
+
+    @Bean
     public RouterFunction<ServerResponse> userTransactionsRoute(PrivateRequestHandler requestHandler) {
         return RouterFunctions.route(GET("/info/transactions"), requestHandler::getTransactions);
     }
