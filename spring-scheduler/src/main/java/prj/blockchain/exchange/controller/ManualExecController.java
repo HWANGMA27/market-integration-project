@@ -15,6 +15,17 @@ import reactor.core.publisher.Mono;
 public class ManualExecController {
 
     private final UserService userService;
+    private final NetworkService networkService;
+    private String targetNetwork = "all";
+
+    @GetMapping("/networks")
+    public Mono<Void> manualNetworkFetching() {
+        log.info(this.getClass() + " executed");
+        return networkService.deleteAllAndSaveNetworkData(targetNetwork)
+                .doOnError(error -> log.error("Error: " + error.getMessage()))
+                .doOnTerminate(() -> log.info(this.getClass() + " finished"))
+                .then();
+    }
 
     @PostMapping("/user")
     public UserDto addUser(@RequestBody UserDto userDto) {
