@@ -31,4 +31,9 @@ public class ManualExecController {
     public UserDto addUser(@RequestBody UserDto userDto) {
         return userService.addUser(userDto);
     }
+
+    @DeleteMapping("/user/{id}")
+    public UserDto deActivateUser(@PathVariable Long id) {
+        return userService.deactivateUser(id);
+    }
 }

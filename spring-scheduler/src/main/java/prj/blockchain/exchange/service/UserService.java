@@ -6,11 +6,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import prj.blockchain.exchange.config.CryptoConfig;
 import prj.blockchain.exchange.dto.UserDto;
+import prj.blockchain.exchange.exception.BadRequestException;
 import prj.blockchain.exchange.model.User;
 import prj.blockchain.exchange.repository.UserRepository;
 import prj.blockchain.exchange.util.CryptoUtil;
 
 import javax.crypto.SecretKey;
+import java.util.Optional;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -33,5 +35,12 @@ public class UserService {
             log.error(e.getMessage());
             return new UserDto();
         }
+    }
+
+    @Transactional
+    public UserDto deactivateUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new BadRequestException("User not found"));
+        user.deActivate();
+        return UserDto.fromEntity(user);
     }
 }

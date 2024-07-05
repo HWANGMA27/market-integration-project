@@ -21,11 +21,17 @@ public class User extends BaseEntity{
     private String nickName;
     private String apiKey;
     private String apiSecret;
+    private boolean isActive;
 
     @Builder
     public User(UserDto userDto) {
         this.nickName = userDto.getNickName();
         this.apiKey = userDto.getApiKey();
         this.apiSecret = userDto.getApiSecret();
+        this.isActive = true;
+    }
+
+    public void deActivate() {
+        this.isActive = false;
     }
 }

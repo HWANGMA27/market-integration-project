@@ -11,12 +11,14 @@ public class UserDto {
     private String nickName;
     private String apiKey;
     private String apiSecret;
+    private boolean isActive;
 
     @Builder
-    public UserDto(String nickName, String apiKey, String apiSecret){
+    public UserDto(String nickName, String apiKey, String apiSecret, boolean isActive){
         this.nickName = nickName;
         this.apiKey = apiKey;
         this.apiSecret = apiSecret;
+        this.isActive = isActive;
     }
 
     public static UserDto fromEntity(User user){
