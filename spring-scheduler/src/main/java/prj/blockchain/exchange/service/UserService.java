@@ -29,7 +29,7 @@ public class UserService {
             String encryptedApiKey = CryptoUtil.encrypt(userDto.getApiKey(), secretKey); // 사용자 키 암호화
             String encryptedApiSecret = CryptoUtil.encrypt(userDto.getApiSecret(), secretKey); // 사용자 secret 암호화
             userDto.setApiKey(encryptedApiKey);
-            userDto.setApiKey(encryptedApiSecret);
+            userDto.setApiSecret(encryptedApiSecret);
             return UserDto.fromEntity(userRepository.save(new User(userDto)));
         }catch (Exception e) {
             log.error(e.getMessage());
