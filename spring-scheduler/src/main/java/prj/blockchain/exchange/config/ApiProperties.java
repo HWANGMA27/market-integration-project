@@ -12,4 +12,5 @@ import org.springframework.context.annotation.Configuration;
 public class ApiProperties {
     private String price;
     private String networkStatus;
+    private String balance;
 }

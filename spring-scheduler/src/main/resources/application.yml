@@ -13,6 +13,7 @@ api:
   endpoint:
     price: /price
     network-status: /status
+    balance: /info/balance
 
 spring:
   datasource:
