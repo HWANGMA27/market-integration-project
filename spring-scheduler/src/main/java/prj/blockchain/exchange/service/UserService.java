@@ -43,4 +43,8 @@ public class UserService {
         user.deActivate();
         return UserDto.fromEntity(user);
     }
+
+    public Optional<User> findUser(Long id) {
+        return userRepository.findById(id);
+    }
 }
