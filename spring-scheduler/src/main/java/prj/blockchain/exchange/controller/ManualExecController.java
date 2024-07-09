@@ -4,9 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
 import prj.blockchain.exchange.dto.UserDto;
+import prj.blockchain.exchange.model.User;
+import prj.blockchain.exchange.service.BalanceHistoryService;
 import prj.blockchain.exchange.service.NetworkService;
 import prj.blockchain.exchange.service.UserService;
 import reactor.core.publisher.Mono;
+
+import java.util.Optional;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -16,6 +20,7 @@ public class ManualExecController {
 
     private final UserService userService;
     private final NetworkService networkService;
+    private final BalanceHistoryService balanceHistoryService;
     private String targetNetwork = "all";
 
     @GetMapping("/networks")
@@ -35,5 +40,17 @@ public class ManualExecController {
     @DeleteMapping("/user/{id}")
     public UserDto deActivateUser(@PathVariable Long id) {
         return userService.deactivateUser(id);
+    }
+
+    @GetMapping("/user/{id}/balance/{currency}")
+    private void getBalance(@PathVariable Long id, @PathVariable String currency) {
+        Optional<User> user = userService.findUser(id);
+        if(user.isPresent()){
+            try {
+                balanceHistoryService.saveUserBalanceHistory(user.get(), currency);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+        }
     }
 }
