@@ -1,9 +1,11 @@
 package prj.blockchain.exchange.model;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.math.BigDecimal;
+
+@Builder
+@AllArgsConstructor
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -16,7 +18,8 @@ public class BalanceHistory {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    private String status;
+
+    private String assetType;
 
     private Double totalKrw;
 
@@ -24,13 +27,15 @@ public class BalanceHistory {
 
     private Double availableKrw;
 
-    private Double totalAsset;
+    @Column(precision = 38, scale = 18)
+    private BigDecimal totalAsset;
 
-    private Double inUseAsset;
+    @Column(precision = 38, scale = 18)
+    private BigDecimal xcoinLast;
 
-    private Double availableAsset;
+    @Column(precision = 38, scale = 18)
+    private BigDecimal inUseAsset;
 
-    private Double xcoinLast;
-
-    private String assetType;
+    @Column(precision = 38, scale = 18)
+    private BigDecimal availableAsset;
 }
