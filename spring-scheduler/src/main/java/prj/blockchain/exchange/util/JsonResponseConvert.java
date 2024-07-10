@@ -8,16 +8,18 @@ import org.springframework.stereotype.Component;
 import prj.blockchain.exchange.model.BalanceHistory;
 import prj.blockchain.exchange.model.Network;
 import prj.blockchain.exchange.model.User;
+import prj.blockchain.exchange.repository.NetworkRepository;
+
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Log4j2
 @RequiredArgsConstructor
 @Component
 public class JsonResponseConvert {
-
+    private final NetworkRepository networkRepository;
     private final ObjectMapper objectMapper;
 
     public List<Network> networkResponseMapping(String response) {
@@ -45,26 +47,37 @@ public class JsonResponseConvert {
     }
 
     public List<BalanceHistory> balanceResponseMapping(User user, String currency, String response) {
-        System.out.println(response);
+        log.info(response);
+        String currencyLowercase = currency.toLowerCase(Locale.ROOT);
+        Set<String> currencies;
+        if(!currencyLowercase.equals("all")){
+            currencies = new HashSet<>();
+            currencies.add(currencyLowercase);
+        } else {
+            List<Network> allNetworks = networkRepository.findAll();
+            currencies = allNetworks.stream().map(Network::getCurrency).collect(Collectors.toSet());
+        }
+
+        // krw 추가
         List<BalanceHistory> balanceHistoryList = new ArrayList<>();
         try {
             log.info(this.getClass() + " executed");
             JsonNode root = objectMapper.readTree(response);
             if (root.has("data")) {
                 JsonNode dataNode = root.get("data");
-
-                BalanceHistory balanceHistory = BalanceHistory.builder()
-                        .user(user)
-                        .totalKrw(dataNode.get("total_krw").asDouble())
-                        .inUseKrw(dataNode.get("in_use_krw").asDouble())
-                        .availableKrw(dataNode.get("available_krw").asDouble())
-                        .totalAsset(new BigDecimal(dataNode.get("total_".concat(currency)).asText()))
-                        .inUseAsset(new BigDecimal(dataNode.get("in_use_".concat(currency)).asText()))
-                        .availableAsset(new BigDecimal(dataNode.get("available_".concat(currency)).asText()))
-                        .xcoinLast(new BigDecimal(dataNode.get("xcoin_last_".concat(currency)).asText()))
-                        .assetType(currency).build();
-                balanceHistoryList.add(balanceHistory);
-                balanceHistoryList.forEach(balanceHistoryItem -> log.info("BalanceHistory: " + balanceHistoryItem.toString()));
+                for (String targetCurrency : currencies) {
+                    BigDecimal currencyTotal = new BigDecimal(dataNode.path("total_".concat(targetCurrency)).asText());
+                    if (currencyTotal.compareTo(BigDecimal.ZERO) > 0) {
+                        BalanceHistory balanceHistory = BalanceHistory.builder()
+                                .user(user)
+                                .totalAsset(new BigDecimal(dataNode.get("total_".concat(targetCurrency)).asText()))
+                                .inUseAsset(new BigDecimal(dataNode.get("in_use_".concat(targetCurrency)).asText()))
+                                .availableAsset(new BigDecimal(dataNode.get("available_".concat(targetCurrency)).asText()))
+                                .assetType(targetCurrency).build();
+                        balanceHistoryList.add(balanceHistory);
+                        balanceHistoryList.forEach(balanceHistoryItem -> log.info("BalanceHistory: " + balanceHistoryItem.toString()));
+                    }
+                }
             }
             log.info(this.getClass() + " finished");
         } catch (IOException e) {
