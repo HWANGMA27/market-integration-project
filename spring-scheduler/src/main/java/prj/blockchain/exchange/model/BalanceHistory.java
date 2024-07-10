@@ -21,17 +21,8 @@ public class BalanceHistory {
 
     private String assetType;
 
-    private Double totalKrw;
-
-    private Double inUseKrw;
-
-    private Double availableKrw;
-
     @Column(precision = 38, scale = 18)
     private BigDecimal totalAsset;
-
-    @Column(precision = 38, scale = 18)
-    private BigDecimal xcoinLast;
 
     @Column(precision = 38, scale = 18)
     private BigDecimal inUseAsset;
