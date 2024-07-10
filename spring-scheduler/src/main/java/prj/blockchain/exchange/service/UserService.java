@@ -12,6 +12,7 @@ import prj.blockchain.exchange.repository.UserRepository;
 import prj.blockchain.exchange.util.CryptoUtil;
 
 import javax.crypto.SecretKey;
+import java.util.List;
 import java.util.Optional;
 
 @Log4j2
@@ -47,4 +48,6 @@ public class UserService {
     public Optional<User> findUser(Long id) {
         return userRepository.findById(id);
     }
+
+    public List<User> findAllUser() { return userRepository.findAll();}
 }
