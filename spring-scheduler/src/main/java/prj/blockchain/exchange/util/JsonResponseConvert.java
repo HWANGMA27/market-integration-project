@@ -55,7 +55,7 @@ public class JsonResponseConvert {
             currencies.add(currencyLowercase);
         } else {
             List<Network> allNetworks = networkRepository.findAll();
-            currencies = allNetworks.stream().map(Network::getCurrency).collect(Collectors.toSet());
+            currencies = allNetworks.stream().map(Network::getCurrency).map(c -> c.toLowerCase(Locale.ROOT)).collect(Collectors.toSet());
         }
 
         // krw 추가
