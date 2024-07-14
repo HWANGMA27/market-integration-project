@@ -7,27 +7,5 @@ scheduler:
   minute-check: "0 * * * * *"
   sec-check: "0/20 * * * * *"
 
-api:
-  secret-key: 
-  base-url: http://localhost:8080
-  endpoint:
-    price: /price
-    network-status: /status
-    balance: /info/balance
-
-spring:
-  datasource:
-    url: jdbc:h2:file:~/testdb;AUTO_SERVER=TRUE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: password
-  h2:
-    console:
-      enabled: true
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-
 logging:
   config: classpath:log4j2.xml
