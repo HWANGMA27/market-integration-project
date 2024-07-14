@@ -7,6 +7,14 @@ scheduler:
   minute-check: "0 * * * * *"
   sec-check: "0/10 * * * * *"
 
+queue:
+  name: "sch-queue"
+  exchange: "sch-exchange"
+  routing-key:
+    condition: "sch.exchange.#"
+    balance: "sch.exchange.balance"
+    network: "sch.exchange.network"
+
 spring:
   rabbitmq:
     host: localhost

@@ -4,13 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+import prj.blockchain.exchange.config.QueueProperties;
 import prj.blockchain.exchange.dto.CustomMessage;
 
 @Log4j2
 @RequiredArgsConstructor
 @Service
 public class MqService {
-    private static final String exchangeName = "sch-exchange";
+    private final QueueProperties queueProperties;
+//    private static final String exchangeName = "sch-exchange";
     private final RabbitTemplate rabbitTemplate;
 
     /**
@@ -20,7 +22,7 @@ public class MqService {
     public void sendMessage(CustomMessage messageDto, String routingKey) {
         log.info("-----------------------------");
         log.info(this.getClass() + ": Sending message...");
-        this.rabbitTemplate.convertAndSend(exchangeName, routingKey, messageDto);
+        this.rabbitTemplate.convertAndSend(queueProperties.getExchange(), routingKey, messageDto);
         log.info("-----------------------------");
     }
 }
