@@ -5,7 +5,14 @@ scheduler:
   daily-check: "0 0 0 * * *"
   hourly-check: "0 0 * * * *"
   minute-check: "0 * * * * *"
-  sec-check: "0/20 * * * * *"
+  sec-check: "0/10 * * * * *"
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: 1234
 
 logging:
   config: classpath:log4j2.xml

@@ -2,12 +2,17 @@ server:
   port: 8082
 
 api:
-  secret-key:
   base-url: http://localhost:8080
   endpoint:
     price: /price
     network-status: /status
     balance: /info/balance
+
+scheduler:
+  daily-check: "0 0 0 * * *"
+  hourly-check: "0 0 * * * *"
+  minute-check: "0 * * * * *"
+  sec-check: "0/20 * * * * *"
 
 spring:
   datasource:
@@ -22,6 +27,11 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: 1234
 
 logging:
   config: classpath:log4j2.xml

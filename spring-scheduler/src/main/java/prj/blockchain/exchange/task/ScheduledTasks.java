@@ -4,36 +4,30 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import prj.blockchain.exchange.dto.CustomMessage;
+import prj.blockchain.exchange.service.MqService;
 
 @Log4j2
 @Component
 @RequiredArgsConstructor
 public class ScheduledTasks {
-//    private final UserService userService;
-//    private final NetworkService networkService;
-//    private final BalanceHistoryService balanceHistoryService;
-//    private String targetNetwork = "all";
+    private final MqService mqService;
+    private final String networkCheckRoutingKey = "sch.exchange.network";
+    private final String balanceCheckRoutingKey = "sch.exchange.balance";
+
+    @Scheduled(cron = "${scheduler.sec-check}")
+    public void executeGetNetworkData() {
+        log.info(this.getClass() + " executed");
+        CustomMessage customMessage = new CustomMessage(this.getClass().getName(), this.getClass().getName());
+        mqService.sendMessage(customMessage, networkCheckRoutingKey);
+        log.info(this.getClass() + " finished");
+    }
 //
-//    @Scheduled(cron = "${scheduler.daily-check}")
-//    public void executeGetNetworkData() {
-//        log.info(this.getClass() + " executed");
-//        networkService.deleteAllAndSaveNetworkData(targetNetwork)
-//                .doOnError(error -> log.error("Error: " + error.getMessage()))
-//                .subscribe();
-//        log.info(this.getClass() + " finished");
-//    }
-//
-//    @Scheduled(cron = "${scheduler.daily-check}")
-//    public void executeGetDailyUserBalance() {
-//        log.info(this.getClass() + " executed");
-//        List<User> allUser = userService.findAllUser();
-//        for (User user: allUser) {
-//            try {
-//                    balanceHistoryService.saveUserBalanceHistory(user, targetNetwork);
-//                } catch (Exception e) {
-//                    log.error(e.getMessage());
-//                }
-//        }
-//        log.info(this.getClass() + " finished");
-//    }
+    @Scheduled(cron = "${scheduler.minute-check}")
+    public void executeGetDailyUserBalance() {
+        log.info(this.getClass() + " executed");
+        CustomMessage customMessage = new CustomMessage(this.getClass().getName(), this.getClass().getName());
+        mqService.sendMessage(customMessage, balanceCheckRoutingKey);
+        log.info(this.getClass() + " finished");
+    }
 }
