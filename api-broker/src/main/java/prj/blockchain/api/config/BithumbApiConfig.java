@@ -9,9 +9,9 @@ import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
 @Configuration
-public class CryptoConfig {
+public class BithumbApiConfig {
 
-    @Value("${api.secret-key}")
+    @Value("${api.bithumb.secret-key}")
     private String secretKeyString;
 
     private SecretKey secretKey;

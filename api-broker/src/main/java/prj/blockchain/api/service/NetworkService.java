@@ -5,7 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
-import prj.blockchain.api.config.ApiProperties;
+import prj.blockchain.api.config.BithumbApiProperties;
 import prj.blockchain.api.model.Network;
 import prj.blockchain.api.repository.NetworkRepository;
 import prj.blockchain.api.util.JsonResponseConvert;
@@ -19,12 +19,12 @@ import java.util.List;
 @Service
 public class NetworkService {
     private final WebClient webClient;
-    private final ApiProperties endPoint;
+    private final BithumbApiProperties bithumbApiProperties;
     private final JsonResponseConvert jsonResponseConvert;
     private final NetworkRepository networkRepository;
 
     public Mono<List<Network>> fetchNetworkData(String targetNetwork) {
-        String getPriceEndPoint = String.join("/", endPoint.getNetworkStatus(), targetNetwork);
+        String getPriceEndPoint = String.join("/", bithumbApiProperties.getEndpoint().getNetworkStatus(), targetNetwork);
         return webClient.get()
                 .uri(getPriceEndPoint)
                 .retrieve()

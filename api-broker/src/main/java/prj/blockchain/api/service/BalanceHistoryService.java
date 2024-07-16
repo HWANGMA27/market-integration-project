@@ -6,8 +6,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
-import prj.blockchain.api.config.ApiProperties;
-import prj.blockchain.api.config.CryptoConfig;
+import prj.blockchain.api.config.BithumbApiProperties;
+import prj.blockchain.api.config.BithumbApiConfig;
 import prj.blockchain.api.exception.DecryptFailException;
 import prj.blockchain.api.model.BalanceHistory;
 import prj.blockchain.api.model.User;
@@ -24,9 +24,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class BalanceHistoryService {
-    private final CryptoConfig cryptoConfig;
+    private final BithumbApiConfig bithumbApiConfig;
     private final WebClient webClient;
-    private final ApiProperties endPoint;
+    private final BithumbApiProperties bithumbApiProperties;
     private final JsonResponseConvert jsonResponseConvert;
     private final BalanceHistoryRepository balanceHistoryRepository;
 
@@ -53,7 +53,7 @@ public class BalanceHistoryService {
 
 
     public Mono<List<BalanceHistory>> fetchUserBalance(User user, String currency) throws DecryptFailException {
-        String getBalanceEndPoint = String.join("/", endPoint.getBalance(), currency);
+        String getBalanceEndPoint = String.join("/", bithumbApiProperties.getEndpoint().getBalance(), currency);
 
         HttpHeaders apiKeyHeaders = getApiKeyHeaders(user);
         return webClient.get()
@@ -69,7 +69,7 @@ public class BalanceHistoryService {
 
     private HttpHeaders getApiKeyHeaders(User user) throws DecryptFailException {
         try {
-            SecretKey secretKey = cryptoConfig.getSecretKey();
+            SecretKey secretKey = bithumbApiConfig.getSecretKey();
             String apiKey = CryptoUtil.decrypt(user.getApiKey(), secretKey);
             String apiSecret =  CryptoUtil.decrypt(user.getApiSecret(), secretKey);
 

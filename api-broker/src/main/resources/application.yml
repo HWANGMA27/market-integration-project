@@ -2,11 +2,13 @@ server:
   port: 8082
 
 api:
-  base-url: http://localhost:8080
-  endpoint:
-    price: /price
-    network-status: /status
-    balance: /info/balance
+  bithumb:
+    secret-key: 
+    base-url: http://localhost:8080
+    endpoint:
+      price: /price
+      network-status: /status
+      balance: /info/balance
 
 queue:
   name: "sch-queue"
