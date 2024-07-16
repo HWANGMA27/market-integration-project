@@ -1,0 +1,10 @@
+url:
+  upbit:
+    base: https://api.upbit.com/
+    version: v1
+    exchange:
+      account: /accounts/
+
+server:
+  port: 8084
+
