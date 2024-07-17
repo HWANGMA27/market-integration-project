@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class BithumbJsonResponseConvert {
     private final NetworkRepository networkRepository;
     private final ObjectMapper objectMapper;
-    private Exchange exchange = Exchange.BITHUMB;
+    private final Exchange exchange = Exchange.BITHUMB;
 
     public List<Network> networkResponseMapping(String response) {
     System.out.println(response);
@@ -57,11 +57,10 @@ public class BithumbJsonResponseConvert {
             currencies = new HashSet<>();
             currencies.add(currencyLowercase);
         } else {
-            List<Network> allNetworks = networkRepository.findAll();
+            List<Network> allNetworks = networkRepository.findAllByExchange(exchange);
             currencies = allNetworks.stream().map(Network::getCurrency).map(c -> c.toLowerCase(Locale.ROOT)).collect(Collectors.toSet());
         }
 
-        // krw 추가
         List<BalanceHistory> balanceHistoryList = new ArrayList<>();
         try {
             log.info(this.getClass() + " executed");
@@ -73,6 +72,7 @@ public class BithumbJsonResponseConvert {
                     if (currencyTotal.compareTo(BigDecimal.ZERO) > 0) {
                         BalanceHistory balanceHistory = BalanceHistory.builder()
                                 .user(user)
+                                .exchange(exchange)
                                 .totalAsset(new BigDecimal(dataNode.get("total_".concat(targetCurrency)).asText()))
                                 .inUseAsset(new BigDecimal(dataNode.get("in_use_".concat(targetCurrency)).asText()))
                                 .availableAsset(new BigDecimal(dataNode.get("available_".concat(targetCurrency)).asText()))

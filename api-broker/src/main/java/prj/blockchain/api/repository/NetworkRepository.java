@@ -6,9 +6,13 @@ import org.springframework.stereotype.Repository;
 import prj.blockchain.api.model.Exchange;
 import prj.blockchain.api.model.Network;
 
+import java.util.List;
+
 @Repository
 public interface NetworkRepository extends JpaRepository<Network, Long> {
 
     @Modifying
     void deleteByExchange(Exchange exchange);
+
+    List<Network> findAllByExchange(Exchange exchange);
 }

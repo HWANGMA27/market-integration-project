@@ -10,11 +10,14 @@ import java.math.BigDecimal;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class BalanceHistory {
+public class BalanceHistory extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Enumerated(EnumType.STRING)
+    private Exchange exchange;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
