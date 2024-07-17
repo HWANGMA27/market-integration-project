@@ -12,19 +12,17 @@ public class PublicRequestHandler {
     private final WebClient webClient;
     private final String API_TICKER_URL;
     private final String API_STATUS_URL;
-    private final String API_NETWORK_URL;
     private final String API_NETWORK_INFO_URL;
     private final String API_ORDERBOOK_URL;
     private final String API_PRICE_URL;
 
     public PublicRequestHandler(WebClient.Builder webClientBuilder,
-                                @Value("${url.bithumb.base}") String baseUrl, @Value("${url.bithumb.exchange.ticker}") String tickerUrl,
-                                @Value("${url.bithumb.exchange.status}") String statusUrl, @Value("${url.bithumb.exchange.status}") String networkUrl,
-                                @Value("${url.bithumb.exchange.network}") String networkInfoUrl,
-                                @Value("${url.bithumb.exchange.orderBook}") String orderBookUrl, @Value("${url.bithumb.exchange.price}") String priceUrl) {
+                                @Value("${url.base}") String baseUrl, @Value("${url.exchange.ticker}") String tickerUrl,
+                                @Value("${url.exchange.status}") String statusUrl,
+                                @Value("${url.exchange.network}") String networkInfoUrl,
+                                @Value("${url.exchange.orderBook}") String orderBookUrl, @Value("${url.exchange.price}") String priceUrl) {
         this.API_TICKER_URL = tickerUrl;
         this.API_STATUS_URL = statusUrl;
-        this.API_NETWORK_URL = networkUrl;
         this.API_NETWORK_INFO_URL = networkInfoUrl;
         this.API_ORDERBOOK_URL = orderBookUrl;
         this.API_PRICE_URL = priceUrl;
@@ -45,15 +43,6 @@ public class PublicRequestHandler {
         String cryptocurrency = request.pathVariable("cryptocurrency");
         return this.webClient.get()
                 .uri(API_STATUS_URL.concat("/{cryptocurrency}"), cryptocurrency)
-                .retrieve()
-                .bodyToMono(String.class)
-                .flatMap(response -> ServerResponse.ok().body(Mono.just(response), String.class))
-                .onErrorResume(e -> ServerResponse.status(500).body(Mono.just("Error: " + e.getMessage()), String.class));
-    }
-
-    public Mono<ServerResponse> getNetworkStatus(ServerRequest request) {
-        return this.webClient.get()
-                .uri(API_NETWORK_URL)
                 .retrieve()
                 .bodyToMono(String.class)
                 .flatMap(response -> ServerResponse.ok().body(Mono.just(response), String.class))

@@ -19,11 +19,11 @@ public class PrivateRequestHandler {
     private final String USER_ORDER_DETAIl_URL;
 
     public PrivateRequestHandler(ApiClient apiClient,
-                                 @Value("${url.bithumb.user.transactions}") String userTransactionsUrl,
-                                 @Value("${url.bithumb.user.info}") String userInfoUrl,
-                                 @Value("${url.bithumb.user.balance}") String userBalanceUrl,
-                                 @Value("${url.bithumb.user.orders}") String userOrderUrl,
-                                 @Value("${url.bithumb.user.order-detail}") String userOrderDetailUrl) {
+                                 @Value("${url.user.transactions}") String userTransactionsUrl,
+                                 @Value("${url.user.info}") String userInfoUrl,
+                                 @Value("${url.user.balance}") String userBalanceUrl,
+                                 @Value("${url.user.orders}") String userOrderUrl,
+                                 @Value("${url.user.order-detail}") String userOrderDetailUrl) {
         this.apiClient = apiClient;
         this.USER_TRANSACTIONS_URL = userTransactionsUrl;
         this.USER_ORDER_URL = userOrderUrl;
