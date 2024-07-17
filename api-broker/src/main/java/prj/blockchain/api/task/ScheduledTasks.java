@@ -9,6 +9,7 @@ import prj.blockchain.api.config.QueueProperties;
 import prj.blockchain.api.dto.CustomMessage;
 import prj.blockchain.api.model.User;
 import prj.blockchain.api.service.BalanceHistoryService;
+import prj.blockchain.api.service.CurrencyService;
 import prj.blockchain.api.service.NetworkService;
 import prj.blockchain.api.service.UserService;
 
@@ -21,6 +22,7 @@ public class ScheduledTasks {
     private final QueueProperties queueProperties;
     private final UserService userService;
     private final NetworkService networkService;
+    private final CurrencyService currencyService;
     private final BalanceHistoryService balanceHistoryService;
 
     private final String targetNetwork = "all";
@@ -34,14 +36,20 @@ public class ScheduledTasks {
             executeGetNetworkData();
         } else if (routingKey.equals(queueProperties.getRoutingKey().getBalance())) {
             executeGetDailyUserBalance();
+        } else if (routingKey.equals(queueProperties.getRoutingKey().getCurrency())) {
+            executeGetCurrencyData();
         }
     }
 
     public void executeGetNetworkData() {
         log.info(this.getClass() + " executed");
-        networkService.deleteAllAndSaveNetworkData(targetNetwork)
-                .doOnError(error -> log.error("Error: " + error.getMessage()))
-                .subscribe();
+        networkService.deleteAllAndSaveNetworkData(targetNetwork);
+        log.info(this.getClass() + " finished");
+    }
+
+    public void executeGetCurrencyData() {
+        log.info(this.getClass() + " executed");
+        currencyService.deleteAllAndSaveCurrencyData();
         log.info(this.getClass() + " finished");
     }
 

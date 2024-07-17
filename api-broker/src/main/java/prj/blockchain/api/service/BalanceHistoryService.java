@@ -20,7 +20,6 @@ import javax.crypto.SecretKey;
 import java.util.List;
 
 @Log4j2
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class BalanceHistoryService {
@@ -30,21 +29,17 @@ public class BalanceHistoryService {
     private final BithumbJsonResponseConvert jsonResponseConvert;
     private final BalanceHistoryRepository balanceHistoryRepository;
 
-    @Transactional
     public void saveUserBalanceHistory(User user, String currency) {
         try {
             fetchUserBalance(user, currency)
                     .flatMap(balanceResponse -> {
                         return Mono.fromCallable(() -> {
                             balanceHistoryRepository.saveAll(balanceResponse);
-                            log.info("Saved " + balanceResponse.size() + " network responses to the database.");
+                            log.info("Saved " + balanceResponse.size() + " balance responses to the database.");
                             return balanceResponse;
                         });
                     })
-                    .onErrorResume(e -> {
-                        log.error("Error saving balance history: " + e.getMessage());
-                        return Mono.empty();
-                    })
+                    .doOnError(e -> log.error("Error saving balance history: " + e.getMessage()))
                     .subscribe();
         } catch (DecryptFailException e) {
             log.error("Error get user key :" + e.getMessage());

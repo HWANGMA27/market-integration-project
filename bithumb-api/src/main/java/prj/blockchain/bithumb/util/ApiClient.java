@@ -21,7 +21,7 @@ public class ApiClient {
     protected String api_key;
     protected String api_secret;
 
-	public ApiClient(@Value("${url.bithumb.base}") String baseUrl){
+	public ApiClient(@Value("${url.base}") String baseUrl){
 		api_url = baseUrl;
 	}
 

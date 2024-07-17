@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "api.bithumb")
+@ConfigurationProperties(prefix = "api")
 @Getter
 @Setter
 public class BithumbApiProperties {
@@ -16,7 +16,8 @@ public class BithumbApiProperties {
     @Setter
     public static class Endpoint {
         private String price;
-        private String networkStatus;
+        private String network;
         private String balance;
+        private String currency;
     }
 }

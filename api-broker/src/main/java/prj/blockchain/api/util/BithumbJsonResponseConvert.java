@@ -5,10 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
-import prj.blockchain.api.model.BalanceHistory;
-import prj.blockchain.api.model.Exchange;
-import prj.blockchain.api.model.Network;
-import prj.blockchain.api.model.User;
+import prj.blockchain.api.model.*;
+import prj.blockchain.api.model.Currency;
 import prj.blockchain.api.repository.NetworkRepository;
 
 import java.io.IOException;
@@ -25,7 +23,7 @@ public class BithumbJsonResponseConvert {
     private final Exchange exchange = Exchange.BITHUMB;
 
     public List<Network> networkResponseMapping(String response) {
-    System.out.println(response);
+        System.out.println(response);
         List<Network> networkList = new ArrayList<>();
         try {
             log.info(this.getClass() + " executed");
@@ -89,4 +87,27 @@ public class BithumbJsonResponseConvert {
         return balanceHistoryList;
     }
 
+    public List<Currency> currencyResponseMapping(String response) {
+        System.out.println(response);
+        List<Currency> currencyList = new ArrayList<>();
+        try {
+            log.info(this.getClass() + " executed");
+            JsonNode root = objectMapper.readTree(response);
+            if (root.has("data")) {
+                JsonNode dataArray = root.get("data");
+                if (dataArray.isArray()) {
+                    for (JsonNode dataNode : dataArray) {
+                        Currency currency = objectMapper.treeToValue(dataNode, Currency.class);
+                        currency.updateExchangeInfo(exchange);
+                        currencyList.add(currency);
+                    }
+                }
+                currencyList.forEach(network -> log.info("Network: " + network.getNetwork() + ", Currency: " + network.getCurrency()));
+            }
+            log.info(this.getClass() + " finished");
+        } catch (IOException e) {
+            log.error(this.getClass() + " error msg : " + e.getMessage());
+        }
+        return currencyList;
+    }
 }

@@ -18,5 +18,6 @@ public class QueueProperties {
         private String condition;
         private String balance;
         private String network;
+        private String currency;
     }
 }

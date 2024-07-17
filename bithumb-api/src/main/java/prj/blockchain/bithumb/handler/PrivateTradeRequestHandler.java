@@ -17,8 +17,8 @@ public class PrivateTradeRequestHandler {
     private final String USER_ORDER_CANCEL_URL;
 
     public PrivateTradeRequestHandler(ApiClient apiClient,
-                                 @Value("${url.bithumb.exchange.trade}") String tradePalaceUrl,
-                                 @Value("${url.bithumb.exchange.trade-cancel}") String tradeCancelUrl) {
+                                 @Value("${url.exchange.trade}") String tradePalaceUrl,
+                                 @Value("${url.exchange.trade-cancel}") String tradeCancelUrl) {
         this.apiClient = apiClient;
         this.USER_TRADE_PLACE_URL = tradePalaceUrl;
         this.USER_ORDER_CANCEL_URL = tradeCancelUrl;

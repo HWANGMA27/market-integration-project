@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import prj.blockchain.api.dto.UserDto;
 import prj.blockchain.api.model.User;
 import prj.blockchain.api.service.BalanceHistoryService;
+import prj.blockchain.api.service.CurrencyService;
 import prj.blockchain.api.service.NetworkService;
 import prj.blockchain.api.service.UserService;
 import reactor.core.publisher.Mono;
@@ -20,16 +21,20 @@ public class ManualExecController {
 
     private final UserService userService;
     private final NetworkService networkService;
+    private final CurrencyService currencyService;
     private final BalanceHistoryService balanceHistoryService;
     private String targetNetwork = "all";
 
     @GetMapping("/networks")
-    public Mono<Void> manualNetworkFetching() {
+    public void manualNetworkFetching() {
         log.info(this.getClass() + " executed");
-        return networkService.deleteAllAndSaveNetworkData(targetNetwork)
-                .doOnError(error -> log.error("Error: " + error.getMessage()))
-                .doOnTerminate(() -> log.info(this.getClass() + " finished"))
-                .then();
+        networkService.deleteAllAndSaveNetworkData(targetNetwork);
+    }
+
+    @GetMapping("/currencies")
+    public void manualCurrencyFetching() {
+        log.info(this.getClass() + " executed");
+        currencyService.deleteAllAndSaveCurrencyData();
     }
 
     @PostMapping("/user")

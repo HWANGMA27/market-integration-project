@@ -1,21 +1,20 @@
 url:
-  bithumb:
-    base: https://api.bithumb.com
-    user:
-      info: /info/account
-      balance: /info/balance
-      transactions: /info/user_transactions
-      orders: /info/orders
-      order-detail: /info/order_detail
-    exchange:
-      withdraw-minimum: /public/withdraw/minimum
-      ticker: /public/ticker
-      status: /public/assetsstatus/multichain
-      network: /public/network-info
-      trade: /trade/place
-      trade-cancel: /trade/cancel
-      orderBook: /public/orderbook
-      price: /public/ticker
+  base: https://api.bithumb.com
+  user:
+    info: /info/account
+    balance: /info/balance
+    transactions: /info/user_transactions
+    orders: /info/orders
+    order-detail: /info/order_detail
+  exchange:
+    withdraw-minimum: /public/withdraw/minimum
+    ticker: /public/ticker
+    status: /public/assetsstatus/multichain
+    network: /public/network-info
+    trade: /trade/place
+    trade-cancel: /trade/cancel
+    orderBook: /public/orderbook
+    price: /public/ticker
 
 server:
   port: 8080

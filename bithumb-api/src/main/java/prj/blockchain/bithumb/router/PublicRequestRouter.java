@@ -18,8 +18,8 @@ public class PublicRequestRouter {
     }
 
     @Bean
-    public RouterFunction<ServerResponse> statusRoute(PublicRequestHandler requestHandler) {
-        return RouterFunctions.route(GET("/status/{cryptocurrency}"), requestHandler::getStatus);
+    public RouterFunction<ServerResponse> networkRoute(PublicRequestHandler requestHandler) {
+        return RouterFunctions.route(GET("/network/{cryptocurrency}"), requestHandler::getStatus);
     }
 
     @Bean
@@ -39,6 +39,6 @@ public class PublicRequestRouter {
 
     @Bean
     public RouterFunction<ServerResponse> networkInfo(PublicRequestHandler requestHandler) {
-        return RouterFunctions.route(GET("/networks/info"), requestHandler::getNetworkInfo);
+        return RouterFunctions.route(GET("/currency"), requestHandler::getNetworkInfo);
     }
 }

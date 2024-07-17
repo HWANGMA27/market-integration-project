@@ -15,18 +15,28 @@ public class ScheduledTasks {
     private final MqService mqService;
     private final QueueProperties queueProperties;
 
-    @Scheduled(cron = "${scheduler.minute-check}")
+    @Scheduled(cron = "${scheduler.daily-check}")
     public void executeGetNetworkData() {
         log.info(this.getClass() + " executed");
-        CustomMessage customMessage = new CustomMessage(this.getClass().getName(), this.getClass().getName());
+        String methodName = new Throwable().getStackTrace()[1].getMethodName();
+        CustomMessage customMessage = new CustomMessage(this.getClass().getName(), methodName);
         mqService.sendMessage(customMessage, queueProperties.getRoutingKey().getNetwork());
         log.info(this.getClass() + " finished");
     }
 
     @Scheduled(cron = "${scheduler.daily-check}")
-    public void executeGetDailyUserBalance() {
+    public void executeGetCurrencyData() {
         log.info(this.getClass() + " executed");
-        CustomMessage customMessage = new CustomMessage(this.getClass().getName(), this.getClass().getName());
+        String methodName = new Throwable().getStackTrace()[1].getMethodName();
+        CustomMessage customMessage = new CustomMessage(this.getClass().getName(), methodName);
+        mqService.sendMessage(customMessage, queueProperties.getRoutingKey().getCurrency());
+        log.info(this.getClass() + " finished");
+    }
+
+    @Scheduled(cron = "${scheduler.minute-check}")
+    public void executeGetDailyUserBalance() {
+        String methodName = new Throwable().getStackTrace()[1].getMethodName();
+        CustomMessage customMessage = new CustomMessage(this.getClass().getName(), methodName);
         mqService.sendMessage(customMessage, queueProperties.getRoutingKey().getBalance());
         log.info(this.getClass() + " finished");
     }

@@ -12,11 +12,9 @@ import reactor.core.publisher.Mono;
 public class NetworkService {
     private final BithumbAPIService bithumbAPIService;
 
-    public Mono<Void> deleteAllAndSaveNetworkData(String targetNetwork) {
+    public void deleteAllAndSaveNetworkData(String targetNetwork) {
 //        Mono<Void> upbitMono = upbitAPIService.updateBithumbNetworkData(targetNetwork);
-        Mono<Void> bithumbMono = bithumbAPIService.updateBithumbNetworkData(targetNetwork);
-        return Mono.when(bithumbMono)
-                .then(); // 모든 작업이 완료된 후 Mono<Void>를 반환
+        bithumbAPIService.updateNetworkData(targetNetwork);
     }
 
 }

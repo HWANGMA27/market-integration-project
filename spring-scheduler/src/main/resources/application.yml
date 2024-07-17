@@ -14,6 +14,7 @@ queue:
     condition: "sch.exchange.#"
     balance: "sch.exchange.balance"
     network: "sch.exchange.network"
+    currency: "sch.exchange.currency"
 
 spring:
   rabbitmq:
