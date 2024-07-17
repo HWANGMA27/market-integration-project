@@ -13,7 +13,7 @@ import prj.blockchain.api.model.BalanceHistory;
 import prj.blockchain.api.model.User;
 import prj.blockchain.api.repository.BalanceHistoryRepository;
 import prj.blockchain.api.util.CryptoUtil;
-import prj.blockchain.api.util.JsonResponseConvert;
+import prj.blockchain.api.util.BithumbJsonResponseConvert;
 import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
@@ -27,7 +27,7 @@ public class BalanceHistoryService {
     private final BithumbApiConfig bithumbApiConfig;
     private final WebClient webClient;
     private final BithumbApiProperties bithumbApiProperties;
-    private final JsonResponseConvert jsonResponseConvert;
+    private final BithumbJsonResponseConvert jsonResponseConvert;
     private final BalanceHistoryRepository balanceHistoryRepository;
 
     @Transactional

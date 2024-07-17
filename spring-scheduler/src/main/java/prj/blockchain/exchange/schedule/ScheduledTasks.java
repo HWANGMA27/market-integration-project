@@ -1,4 +1,4 @@
-package prj.blockchain.exchange.task;
+package prj.blockchain.exchange.schedule;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -15,15 +15,15 @@ public class ScheduledTasks {
     private final MqService mqService;
     private final QueueProperties queueProperties;
 
-    @Scheduled(cron = "${scheduler.sec-check}")
+    @Scheduled(cron = "${scheduler.minute-check}")
     public void executeGetNetworkData() {
         log.info(this.getClass() + " executed");
         CustomMessage customMessage = new CustomMessage(this.getClass().getName(), this.getClass().getName());
         mqService.sendMessage(customMessage, queueProperties.getRoutingKey().getNetwork());
         log.info(this.getClass() + " finished");
     }
-//
-    @Scheduled(cron = "${scheduler.minute-check}")
+
+    @Scheduled(cron = "${scheduler.daily-check}")
     public void executeGetDailyUserBalance() {
         log.info(this.getClass() + " executed");
         CustomMessage customMessage = new CustomMessage(this.getClass().getName(), this.getClass().getName());

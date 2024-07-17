@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import prj.blockchain.api.model.Network;
-import prj.blockchain.api.util.JsonResponseConvert;
+import prj.blockchain.api.util.BithumbJsonResponseConvert;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class JsonMapperTest {
 
     @Autowired
-    private JsonResponseConvert jsonResponseConvert;
+    private BithumbJsonResponseConvert jsonResponseConvert;
 
     @Autowired
     private ObjectMapper objectMapper;

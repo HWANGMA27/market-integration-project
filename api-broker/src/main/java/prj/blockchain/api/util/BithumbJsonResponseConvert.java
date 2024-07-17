@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import prj.blockchain.api.model.BalanceHistory;
+import prj.blockchain.api.model.Exchange;
 import prj.blockchain.api.model.Network;
 import prj.blockchain.api.model.User;
 import prj.blockchain.api.repository.NetworkRepository;
@@ -18,9 +19,10 @@ import java.util.stream.Collectors;
 @Log4j2
 @RequiredArgsConstructor
 @Component
-public class JsonResponseConvert {
+public class BithumbJsonResponseConvert {
     private final NetworkRepository networkRepository;
     private final ObjectMapper objectMapper;
+    private Exchange exchange = Exchange.BITHUMB;
 
     public List<Network> networkResponseMapping(String response) {
     System.out.println(response);
@@ -33,6 +35,7 @@ public class JsonResponseConvert {
                 if (dataArray.isArray()) {
                     for (JsonNode dataNode : dataArray) {
                         Network network = objectMapper.treeToValue(dataNode, Network.class);
+                        network.updateExchangeInfo(exchange);
                         networkList.add(network);
                     }
                 }

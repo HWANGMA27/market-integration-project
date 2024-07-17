@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "api.bithumb.endpoint")
+@ConfigurationProperties(prefix = "api.bithumb")
 @Getter
 @Setter
 public class BithumbApiProperties {
