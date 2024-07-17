@@ -43,8 +43,8 @@ Market Integration Project는 Spring WebFlux를 사용하여 빗썸(Bithumb) API
 ## 설치 및 사용 방법
 1. **저장소 클론**:
    ```bash
-   git clone https://github.com/HWANGMA27/BITHUMB-API.git
-   cd BITHUMB-API
+   git clone https://github.com/HWANGMA27/Market-Integration-Project.git
+   cd [MODULE-NAME]
 2.	**의존성 설치**:
     ```bash
     ./gradlew build
@@ -53,19 +53,21 @@ Market Integration Project는 Spring WebFlux를 사용하여 빗썸(Bithumb) API
     ./gradlew bootRun
 
 ## 설정
-application.yml 파일을 수정하여 API 키, 시크릿 키 및 기타 설정을 입력합니다. 또한, 스케줄러의 크론 타임을 변경할 수 있습니다.
+
+1. api-broker의 ManualExecController에 addUser api를 호출 해 유저와 유저 API키와 시크릿을 암호화하여 저장 할 수 있습니다.<br>
+2. api-broker의 application.yml 파일을 수정하여 유저 키를 암호화 하는데 사용할 시크릿을 설정을 할 수 있습니다.<br>
+3. spring-scheduler의 application.yml 파일을 수정하여 스케쥴 실행 간격을 변경 할 수 있습니다.<br>
+ex) api-broker <br>
+ ```bash
+ api:
+  bithumb:
+    secret-key: "YOUR_SECRET_KEY"
+```
+ex) spring-scheduler <br>
    ```bash
-    bithumb:
-      api:
-        key: "YOUR_API_KEY"
-        secret: "YOUR_SECRET_KEY"
-      spring:
-        rabbitmq:
-        host: "localhost"
-        port: 5672
-      scheduler:
-        cron:
-          time: "0 0/1 * * * ?"  # 크론 타임 설정
+   scheduler:
+     cron:
+       time: "0 0/1 * * * ?"  # 크론 타임 설정
 ```
 ## 도커 컴포즈 지원 예정
 추후 도커 컴포즈를 지원하여 쉽게 배포하고 관리할 수 있도록 할 예정입니다.
