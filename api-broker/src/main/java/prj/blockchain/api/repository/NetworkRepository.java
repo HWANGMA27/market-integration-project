@@ -17,5 +17,6 @@ public interface NetworkRepository extends JpaRepository<Network, Long> {
     @Query("DELETE FROM Network n WHERE n.exchange = :exchange")
     void deleteByExchange(Exchange exchange);
 
-    List<Network> findAllByExchange(Exchange exchange);
+    @Query("SELECT DISTINCT n.currency FROM Network n WHERE n.exchange = :exchange")
+    List<String> findDistinctCurrencyByExchange(Exchange exchange);
 }

@@ -55,8 +55,8 @@ public class BithumbJsonResponseConvert {
             currencies = new HashSet<>();
             currencies.add(currencyLowercase);
         } else {
-            List<Network> allNetworks = networkRepository.findAllByExchange(exchange);
-            currencies = allNetworks.stream().map(Network::getCurrency).map(c -> c.toLowerCase(Locale.ROOT)).collect(Collectors.toSet());
+            List<String> allNetworks = networkRepository.findDistinctCurrencyByExchange(exchange);
+            currencies = allNetworks.stream().map(c -> c.toLowerCase(Locale.ROOT)).collect(Collectors.toSet());
         }
 
         List<BalanceHistory> balanceHistoryList = new ArrayList<>();
@@ -66,17 +66,21 @@ public class BithumbJsonResponseConvert {
             if (root.has("data")) {
                 JsonNode dataNode = root.get("data");
                 for (String targetCurrency : currencies) {
-                    BigDecimal currencyTotal = new BigDecimal(dataNode.path("total_".concat(targetCurrency)).asText());
-                    if (currencyTotal.compareTo(BigDecimal.ZERO) > 0) {
-                        BalanceHistory balanceHistory = BalanceHistory.builder()
-                                .user(user)
-                                .exchange(exchange)
-                                .totalAsset(new BigDecimal(dataNode.get("total_".concat(targetCurrency)).asText()))
-                                .inUseAsset(new BigDecimal(dataNode.get("in_use_".concat(targetCurrency)).asText()))
-                                .availableAsset(new BigDecimal(dataNode.get("available_".concat(targetCurrency)).asText()))
-                                .assetType(targetCurrency).build();
-                        balanceHistoryList.add(balanceHistory);
-                        balanceHistoryList.forEach(balanceHistoryItem -> log.info("BalanceHistory: " + balanceHistoryItem.toString()));
+                    if(dataNode.path("total_".concat(targetCurrency)).asText().equals("") || Objects.isNull(dataNode.path("total_".concat(targetCurrency)).asText())){
+                        log.warn(targetCurrency + " : can not found data");
+                    } else {
+                        BigDecimal currencyTotal = new BigDecimal(dataNode.path("total_".concat(targetCurrency)).asText());
+                        if (currencyTotal.compareTo(BigDecimal.ZERO) > 0) {
+                            BalanceHistory balanceHistory = BalanceHistory.builder()
+                                    .user(user)
+                                    .exchange(exchange)
+                                    .totalAsset(new BigDecimal(dataNode.get("total_".concat(targetCurrency)).asText()))
+                                    .inUseAsset(new BigDecimal(dataNode.get("in_use_".concat(targetCurrency)).asText()))
+                                    .availableAsset(new BigDecimal(dataNode.get("available_".concat(targetCurrency)).asText()))
+                                    .assetType(targetCurrency).build();
+                            balanceHistoryList.add(balanceHistory);
+                            balanceHistoryList.forEach(balanceHistoryItem -> log.info("BalanceHistory " + targetCurrency + " : " + balanceHistoryItem.getTotalAsset()));
+                        }
                     }
                 }
             }
