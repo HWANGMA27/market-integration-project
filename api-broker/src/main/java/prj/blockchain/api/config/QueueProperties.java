@@ -2,22 +2,21 @@ package prj.blockchain.api.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
+import java.util.Map;
 
 @Data
-@Component
+@Configuration
 @ConfigurationProperties(prefix = "queue")
 public class QueueProperties {
-
-    private String name;
     private String exchange;
-    private RoutingKey routingKey;
+    private List<Task> tasks;
 
     @Data
-    public static class RoutingKey {
-        private String condition;
-        private String balance;
-        private String network;
-        private String currency;
+    public static class Task {
+        private String name;
+        private Map<String, String> routingKey;
     }
 }

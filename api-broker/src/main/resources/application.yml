@@ -15,13 +15,18 @@ api:
     balance: /info/balance
 
 queue:
-  name: "sch-queue"
-  exchange: "sch-exchange"
-  routing-key:
-    condition: "sch.exchange.#"
-    balance: "sch.exchange.balance"
-    network: "sch.exchange.network"
-    currency: "sch.exchange.currency"
+  exchange: topic-exchange
+  tasks:
+    - name: sch-queue
+      routing-key:
+        condition: sch.exchange.#
+        balance: sch.exchange.balance
+        network: sch.exchange.network
+        currency: sch.exchange.currency
+    - name: slack-queue
+      routing-key:
+        condition: slack.test.#
+        warning: slack.warning
 
 spring:
   datasource:

@@ -6,8 +6,14 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.amqp.rabbit.config.DirectRabbitListenerContainerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Configuration
@@ -16,29 +22,60 @@ public class RabbitConfiguration {
     private final QueueProperties queueProperties;
 
     @Bean
-    Queue queue() {
-        return new Queue(queueProperties.getName(), false);
+    public List<Queue> queues() {
+        List<Queue> queues = new ArrayList<>();
+        for (QueueProperties.Task task : queueProperties.getTasks()) {
+            queues.add(new Queue(task.getName(), false));
+        }
+        return queues;
     }
 
     @Bean
-    TopicExchange exchange() {
+    public TopicExchange exchange() {
         return new TopicExchange(queueProperties.getExchange());
     }
 
     @Bean
-    Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(queueProperties.getRoutingKey().getCondition());
+    public List<Binding> bindings() {
+        List<Binding> bindings = new ArrayList<>();
+        for (QueueProperties.Task task : queueProperties.getTasks()) {
+            Queue queue = new Queue(task.getName(), false);
+            for (String key : task.getRoutingKey().keySet()) {
+                bindings.add(BindingBuilder.bind(queue).to(exchange()).with(task.getRoutingKey().get(key)));
+            }
+        }
+        return bindings;
     }
 
     @Bean
-    RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, MessageConverter messageConverter) {
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter(messageConverter);
+        rabbitTemplate.setMessageConverter(messageConverter());
         return rabbitTemplate;
     }
 
     @Bean
-    MessageConverter messageConverter() {
+    public MessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();
+    }
+
+    @Bean
+    public DefaultMessageHandlerMethodFactory messageHandlerMethodFactory() {
+        DefaultMessageHandlerMethodFactory factory = new DefaultMessageHandlerMethodFactory();
+        factory.setValidator(validator());
+        return factory;
+    }
+
+    @Bean
+    public LocalValidatorFactoryBean validator() {
+        return new LocalValidatorFactoryBean();
+    }
+
+    @Bean
+    public DirectRabbitListenerContainerFactory directRabbitListenerContainerFactory(ConnectionFactory connectionFactory) {
+        DirectRabbitListenerContainerFactory factory = new DirectRabbitListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        factory.setMessageConverter(messageConverter());
+        return factory;
     }
 }
