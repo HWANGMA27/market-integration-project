@@ -3,4 +3,5 @@ include 'bithumb-api'
 include 'api-broker'
 include 'spring-scheduler'
 include 'upbit-api'
+include 'slack'
 

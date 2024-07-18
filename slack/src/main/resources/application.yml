@@ -1,0 +1,21 @@
+server:
+  port: 8085
+
+api:
+
+queue:
+  exchange: topic-exchange
+  tasks:
+    - name: slack-queue
+      routing-key:
+        condition: slack.#
+        warning: slack.warning
+        alert: slack.alert
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: 1234
+
+logging:
+  config: classpath:log4j2.xml

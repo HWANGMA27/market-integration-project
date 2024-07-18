@@ -25,8 +25,9 @@ queue:
         currency: sch.exchange.currency
     - name: slack-queue
       routing-key:
-        condition: slack.test.#
+        condition: slack.#
         warning: slack.warning
+        alert: slack.alert
 
 spring:
   datasource:
