@@ -1,4 +1,4 @@
-package prj.blockchain.api.config;
+package prj.blockchain.slack.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.*;
@@ -17,7 +17,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Configuration
-public class RabbitConfiguration {
+public class RabbitConfig {
 
     private final QueueProperties queueProperties;
 
