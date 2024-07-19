@@ -1,7 +1,10 @@
 server:
   port: 8085
 
-api:
+slack:
+  base-url: https://hooks.slack.com
+  channel:
+    noti:
 
 queue:
   exchange: topic-exchange
