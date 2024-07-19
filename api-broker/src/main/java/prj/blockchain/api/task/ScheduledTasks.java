@@ -2,12 +2,6 @@ package prj.blockchain.api.task;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
-import org.springframework.amqp.rabbit.config.DirectRabbitListenerContainerFactory;
-import org.springframework.amqp.rabbit.listener.MethodRabbitListenerEndpoint;
-import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 import org.springframework.stereotype.Component;
 import prj.blockchain.api.config.QueueProperties;
 import prj.blockchain.api.dto.CustomMessage;
@@ -16,57 +10,20 @@ import prj.blockchain.api.service.BalanceHistoryService;
 import prj.blockchain.api.service.CurrencyService;
 import prj.blockchain.api.service.NetworkService;
 import prj.blockchain.api.service.UserService;
-
 import java.util.List;
-import java.lang.reflect.Method;
 
 @Log4j2
 @Component
 @RequiredArgsConstructor
-@Configuration
-public class ScheduledTasks implements RabbitListenerConfigurer {
+public class ScheduledTasks {
 
     private final QueueProperties queueProperties;
     private final UserService userService;
     private final NetworkService networkService;
     private final CurrencyService currencyService;
     private final BalanceHistoryService balanceHistoryService;
-    private final DirectRabbitListenerContainerFactory factory;
-    private final DefaultMessageHandlerMethodFactory messageHandlerMethodFactory;
-    private RabbitListenerEndpointRegistrar registrar;
 
     private final String targetNetwork = "all";
-
-    @Override
-    public void configureRabbitListeners(RabbitListenerEndpointRegistrar registrar) {
-        for (QueueProperties.Task task : queueProperties.getTasks()) {
-            registerListener(registrar, task);
-        }
-    }
-
-    private void registerListener(RabbitListenerEndpointRegistrar registrar, QueueProperties.Task task) {
-        for (String key : task.getRoutingKey().keySet()) {
-            String queueName = task.getName();
-            String routingKey = task.getRoutingKey().get(key);
-
-            Method method;
-            try {
-                method = this.getClass().getMethod("receiveMessage", CustomMessage.class, String.class);
-            } catch (NoSuchMethodException e) {
-                throw new RuntimeException(e);
-            }
-
-            MethodRabbitListenerEndpoint endpoint = new MethodRabbitListenerEndpoint();
-            endpoint.setId(queueName + "-" + key);
-            endpoint.setMethod(method);
-            endpoint.setBean(this);
-            endpoint.setQueueNames(queueName);
-            endpoint.setExclusive(false);
-            endpoint.setMessageHandlerMethodFactory(messageHandlerMethodFactory);
-
-            registrar.registerEndpoint(endpoint, factory);
-        }
-    }
 
     public void receiveMessage(CustomMessage messageDto, @org.springframework.messaging.handler.annotation.Header("amqp_receivedRoutingKey") String routingKey) {
         log.info("routing key : " + routingKey);
