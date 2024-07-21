@@ -59,17 +59,4 @@ public class RabbitConfig {
         factory.setMessageConverter(messageConverter());
         return factory;
     }
-
-    @Bean
-    public ApplicationRunner applicationRunner(RabbitAdmin rabbitAdmin) {
-        return args -> {
-            for (Queue queue : queueConfig.queues()) {
-                rabbitAdmin.declareQueue(queue);
-            }
-            for (Binding binding : queueConfig.bindings()) {
-                rabbitAdmin.declareBinding(binding);
-            }
-            rabbitAdmin.declareExchange(queueConfig.exchange());
-        };
-    }
 }

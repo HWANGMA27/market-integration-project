@@ -8,7 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import prj.blockchain.api.config.BithumbApiProperties;
 import prj.blockchain.api.config.BithumbApiConfig;
+import prj.blockchain.api.dto.CustomMessage;
 import prj.blockchain.api.exception.DecryptFailException;
+import prj.blockchain.api.exception.NotFoundQueueException;
 import prj.blockchain.api.model.BalanceHistory;
 import prj.blockchain.api.model.User;
 import prj.blockchain.api.repository.BalanceHistoryRepository;
@@ -28,6 +30,7 @@ public class BalanceHistoryService {
     private final BithumbApiProperties bithumbApiProperties;
     private final BithumbJsonResponseConvert jsonResponseConvert;
     private final BalanceHistoryRepository balanceHistoryRepository;
+    private final SlackMsgService slackMsgService;
 
     public void saveUserBalanceHistory(User user, String currency) {
         try {
@@ -35,14 +38,26 @@ public class BalanceHistoryService {
                     .flatMap(balanceResponse -> {
                         return Mono.fromCallable(() -> {
                             balanceHistoryRepository.saveAll(balanceResponse);
-                            log.info("Saved " + balanceResponse.size() + " balance responses to the database.");
                             return balanceResponse;
                         });
                     })
-                    .doOnError(e -> log.error("Error saving balance history: " + e.getMessage()))
+                    .doOnSuccess(balanceResponse -> {
+                        String successMsg = "Completed saveUserBalanceHistory for user: " + user.getId();
+                        CustomMessage customMessage = new CustomMessage(this.getClass().getName(), successMsg);
+                        slackMsgService.sendMessage(customMessage, slackMsgService.getSlackQueueTask().getRoutingKey().get("alert"));
+                        log.info("Saved " + balanceResponse.size() + " balance responses to the database.");
+                    })
+                    .doOnError(e -> {
+                        String errorMsg = "Error saving balance history: " + e.getMessage();
+                        CustomMessage customMessage = new CustomMessage(this.getClass().getName(), errorMsg);
+                        slackMsgService.sendMessage(customMessage, slackMsgService.getSlackQueueTask().getRoutingKey().get("warning"));
+                        log.error(errorMsg);
+                    })
                     .subscribe();
         } catch (DecryptFailException e) {
             log.error("Error get user key :" + e.getMessage());
+        } catch (NotFoundQueueException e) {
+            log.error("Error while find slack message queue");
         }
     }
 

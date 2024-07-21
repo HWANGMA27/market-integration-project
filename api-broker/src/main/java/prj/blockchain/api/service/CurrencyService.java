@@ -12,7 +12,6 @@ public class CurrencyService {
     private final BithumbAPIService bithumbAPIService;
 
     public void deleteAllAndSaveCurrencyData() {
-//        Mono<Void> upbitMono = upbitAPIService.updateCurrencyData(targetNetwork);
         bithumbAPIService.updateCurrencyData();
     }
 
