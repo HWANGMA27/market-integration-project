@@ -1,5 +1,6 @@
 package prj.blockchain.api.dto;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,17 +10,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CustomMessage {
-
-    private String className;
+public class SlackMessage {
 
     private String text;
 
     @Override
     public String toString() {
-        return "CustomMessage{" +
-                "className='" + className + '\'' +
-                ", text='" + text + '\'' +
+        return "SlackMessage{" +
+                "text='" + text + '\'' +
                 '}';
     }
 }

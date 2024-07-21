@@ -2,8 +2,9 @@ package prj.blockchain.api.task;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
-import prj.blockchain.api.config.QueueProperties;
+import prj.blockchain.api.config.mq.QueueProperties;
 import prj.blockchain.api.dto.CustomMessage;
 import prj.blockchain.api.model.User;
 import prj.blockchain.api.service.BalanceHistoryService;
@@ -25,7 +26,7 @@ public class ScheduledTasks {
 
     private final String targetNetwork = "all";
 
-    public void receiveMessage(CustomMessage messageDto, @org.springframework.messaging.handler.annotation.Header("amqp_receivedRoutingKey") String routingKey) {
+    public void receiveMessage(CustomMessage messageDto, @Header("amqp_receivedRoutingKey") String routingKey) {
         log.info("routing key : " + routingKey);
 
         for (QueueProperties.Task task : queueProperties.getTasks()) {
