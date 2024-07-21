@@ -19,7 +19,7 @@ public class SlackController {
     @PostMapping("/slack/manual")
     public String sendSlackMessage(@RequestParam String message) {
         log.info(this.getClass() + " executed");
-        slackClient.sendMessage(slackProperties.getChannel().getNoti(), message);
+        slackClient.sendMessage(slackProperties.getChannel().get("alert"), message);
         log.info(this.getClass() + " finished");
         return "Message sent to Slack";
     }

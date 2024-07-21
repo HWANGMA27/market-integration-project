@@ -11,10 +11,5 @@ import java.util.Map;
 @Configuration
 @ConfigurationProperties(prefix = "slack")
 public class SlackProperties {
-    private Channel channel;
-
-    @Data
-    public static class Channel {
-        private String noti;
-    }
+    private Map<String, String> channel;
 }
