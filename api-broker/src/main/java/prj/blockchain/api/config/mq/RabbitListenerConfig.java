@@ -1,4 +1,4 @@
-package prj.blockchain.api.config;
+package prj.blockchain.api.config.mq;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
@@ -8,6 +8,7 @@ import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
+import prj.blockchain.api.config.mq.QueueProperties;
 import prj.blockchain.api.dto.CustomMessage;
 import prj.blockchain.api.task.ScheduledTasks;
 

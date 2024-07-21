@@ -1,54 +1,36 @@
-package prj.blockchain.api.config;
+package prj.blockchain.api.config.mq;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.config.DirectRabbitListenerContainerFactory;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.amqp.rabbit.config.DirectRabbitListenerContainerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.boot.ApplicationRunner;
 
 @RequiredArgsConstructor
 @Configuration
 public class RabbitConfig {
 
-    private final QueueProperties queueProperties;
+    private final ConnectionFactory connectionFactory;
+    private final QueueConfig queueConfig;
 
+    @Lazy
     @Bean
-    public List<Queue> queues() {
-        List<Queue> queues = new ArrayList<>();
-        for (QueueProperties.Task task : queueProperties.getTasks()) {
-            queues.add(new Queue(task.getName(), false));
-        }
-        return queues;
+    public RabbitAdmin rabbitAdmin() {
+        return new RabbitAdmin(connectionFactory);
     }
 
     @Bean
-    public TopicExchange exchange() {
-        return new TopicExchange(queueProperties.getExchange());
-    }
-
-    @Bean
-    public List<Binding> bindings() {
-        List<Binding> bindings = new ArrayList<>();
-        for (QueueProperties.Task task : queueProperties.getTasks()) {
-            Queue queue = new Queue(task.getName(), false);
-            for (String key : task.getRoutingKey().keySet()) {
-                bindings.add(BindingBuilder.bind(queue).to(exchange()).with(task.getRoutingKey().get(key)));
-            }
-        }
-        return bindings;
-    }
-
-    @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+    public RabbitTemplate rabbitTemplate() {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(messageConverter());
         return rabbitTemplate;
@@ -72,10 +54,23 @@ public class RabbitConfig {
     }
 
     @Bean
-    public DirectRabbitListenerContainerFactory directRabbitListenerContainerFactory(ConnectionFactory connectionFactory) {
+    public DirectRabbitListenerContainerFactory directRabbitListenerContainerFactory() {
         DirectRabbitListenerContainerFactory factory = new DirectRabbitListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
         factory.setMessageConverter(messageConverter());
         return factory;
+    }
+
+    @Bean
+    public ApplicationRunner applicationRunner(RabbitAdmin rabbitAdmin) {
+        return args -> {
+            for (Queue queue : queueConfig.queues()) {
+                rabbitAdmin.declareQueue(queue);
+            }
+            for (Binding binding : queueConfig.bindings()) {
+                rabbitAdmin.declareBinding(binding);
+            }
+            rabbitAdmin.declareExchange(queueConfig.exchange());
+        };
     }
 }
