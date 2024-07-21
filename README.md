@@ -23,7 +23,7 @@ Market Integration Project는 Spring WebFlux를 사용하여 빗썸(Bithumb) API
 - **Spring Boot 3**
 - **Java**
 - **JPA**
-- **Spring Web**
+- **Spring Web MVC**
 - **Spring WebFlux**
 - **Spring Scheduler**
 - **RabbitMQ**
@@ -33,7 +33,7 @@ Market Integration Project는 Spring WebFlux를 사용하여 빗썸(Bithumb) API
 - **api-broker/**: 실제 비즈니스 로직과 DB 관련 소스 코드
 - **bithumb-api/**: 빗썸 API 호출 관련 소스 코드
 - **spring-scheduler/**: 스케줄링 관련 소스 코드
-- **.gitignore**: Git 무시 파일
+- **.gitignore**: Git ignore 파일
 - **README.md**: 프로젝트 설명서
 - **build.gradle**: Gradle 빌드 파일
 - **gradlew**: Gradle Wrapper 실행 파일 (Unix)
