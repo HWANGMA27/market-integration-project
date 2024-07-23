@@ -77,6 +77,26 @@ ex) spring-scheduler <br>
      cron:
        time: "0 0/1 * * * ?"  # 크론 타임 설정
 ```
+ex) slack <br>
+   ```bash
+   slack:
+     base-url: https://hooks.slack.com
+     channel:
+       warning: /service/...  # base-url 뒷부분 추가
+       alert: 
+```
+
+## 슬랙 알림
+알림에 포함되는 내용:
+- 성공 여부
+- 조회 대상 (예: Bithumb, Upbit 등)
+- 작업 종류 (예: 저장, 업데이트 등)
+- 대상 테이블 명
+- 성공 시 반영된 DB 행 수
+
+<img width="453" alt="스크린샷 2024-07-24 오전 12 26 26" src="https://github.com/user-attachments/assets/1bf88e6a-555f-41bc-b830-0c09ace2d2e3">
+
+
 ## 도커 컴포즈 지원 예정
 추후 도커 컴포즈를 지원하여 쉽게 배포하고 관리할 수 있도록 할 예정입니다.
 
