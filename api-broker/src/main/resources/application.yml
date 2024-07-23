@@ -4,8 +4,10 @@ server:
 api:
   bithumb:
     secret-key: 
+    name: BITHMB-API
     base-url: http://localhost:8080
   upbit:
+    name: UPBIT-API
     secret-key:
     base-url: http://localhost:8084
   endpoint:

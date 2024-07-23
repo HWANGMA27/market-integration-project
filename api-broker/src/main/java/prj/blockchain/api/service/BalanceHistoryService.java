@@ -33,6 +33,13 @@ public class BalanceHistoryService {
     private final SlackMsgService slackMsgService;
 
     public void saveUserBalanceHistory(User user, String currency) {
+        String action = "Save";
+        String targetTable = "BalanceHistory";
+        CustomMessage customMessage = CustomMessage.builder()
+                .action(action)
+                .targetTable(targetTable)
+                .apiName(bithumbApiConfig.getName())
+                .build();
         try {
             fetchUserBalance(user, currency)
                     .flatMap(balanceResponse -> {
@@ -42,16 +49,15 @@ public class BalanceHistoryService {
                         });
                     })
                     .doOnSuccess(balanceResponse -> {
-                        String successMsg = "Completed saveUserBalanceHistory for user: " + user.getId();
-                        CustomMessage customMessage = new CustomMessage(this.getClass().getName(), successMsg);
+                        customMessage.setSuccess(true);
+                        customMessage.setAffectedData(String.valueOf(balanceResponse.size()));
                         slackMsgService.sendMessage(customMessage, slackMsgService.getSlackQueueTask().getRoutingKey().get("alert"));
-                        log.info("Saved " + balanceResponse.size() + " balance responses to the database.");
+                        log.info(customMessage.toString());
                     })
                     .doOnError(e -> {
-                        String errorMsg = "Error saving balance history: " + e.getMessage();
-                        CustomMessage customMessage = new CustomMessage(this.getClass().getName(), errorMsg);
+                        customMessage.setSuccess(false);
                         slackMsgService.sendMessage(customMessage, slackMsgService.getSlackQueueTask().getRoutingKey().get("warning"));
-                        log.error(errorMsg);
+                        log.error(customMessage.toString());
                     })
                     .subscribe();
         } catch (DecryptFailException e) {

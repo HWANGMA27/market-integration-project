@@ -1,6 +1,7 @@
 package prj.blockchain.api.config;
 
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,7 +14,8 @@ public class BithumbApiConfig {
 
     @Value("${api.bithumb.secret-key}")
     private String secretKeyString;
-
+    @Getter
+    private String name;
     private SecretKey secretKey;
 
     @PostConstruct

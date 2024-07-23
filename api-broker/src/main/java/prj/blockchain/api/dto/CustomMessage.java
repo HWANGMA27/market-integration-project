@@ -1,25 +1,27 @@
 package prj.blockchain.api.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class CustomMessage {
-
-    private String className;
-
-    private String text;
+    private boolean success; // ex) true
+    private String action; // ex) save
+    private String targetTable; // ex) currency
+    private String apiName; // ex) bithumb / upbit
+    private String affectedData; // ex) 9 rows
 
     @Override
     public String toString() {
         return "CustomMessage{" +
-                "className='" + className + '\'' +
-                ", text='" + text + '\'' +
+                "success=" + success +
+                ", action='" + action + '\'' +
+                ", targetTable='" + targetTable + '\'' +
+                ", apiName='" + apiName + '\'' +
+                ", affectedData='" + affectedData + '\'' +
                 '}';
     }
 }
