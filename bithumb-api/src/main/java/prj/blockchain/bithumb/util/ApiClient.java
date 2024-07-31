@@ -37,15 +37,6 @@ public class ApiClient {
     private String request(String strHost, String strMemod, HashMap<String, String> rgParams,  HashMap<String, String> httpHeaders) {
     	String response = "";
 
-//		// SSL ����
-//		if (strHost.startsWith("https://")) {
-//		    HttpRequest request = HttpRequest.get(strHost);
-//		    // Accept all certificates
-//		    request.trustAllCerts();
-//		    // Accept all hostnames
-//		    request.trustAllHosts();
-//		}
-//
 		if (!strMemod.toUpperCase().equals("HEAD")) {
 		    HttpRequest request = null;
 	
