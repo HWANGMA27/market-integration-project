@@ -7,8 +7,11 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import prj.blockchain.bithumb.dto.PrivateTradeRequestDto;
 import prj.blockchain.bithumb.util.ApiClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.HashMap;
+import java.util.concurrent.TimeoutException;
 
 @Configuration
 public class PrivateTradeRequestHandler {
@@ -33,8 +36,11 @@ public class PrivateTradeRequestHandler {
         params.put("units", requestDto.getUnits());
         params.put("type", requestDto.getType());
         apiClient.setAccessInfo(requestDto.getApiKey(), requestDto.getSecretKey());
-        String response = apiClient.callApi(USER_TRADE_PLACE_URL, params);
-        return ServerResponse.ok().body(Mono.just(response), String.class);
+        return Mono.fromCallable(() -> apiClient.callApi(USER_TRADE_PLACE_URL, params))
+                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(2))
+                        .filter(throwable -> throwable instanceof TimeoutException))
+                .flatMap(response -> ServerResponse.ok().body(Mono.just(response), String.class))
+                .onErrorResume(e -> ServerResponse.status(500).body(Mono.just("Error: " + e.getMessage()), String.class));
     }
 
     public Mono<ServerResponse> cancelOrder(ServerRequest request) {
@@ -46,7 +52,10 @@ public class PrivateTradeRequestHandler {
         params.put("order_currency", requestDto.getOrderCurrency());
         params.put("payment_currency", requestDto.getOrderCurrency());
         apiClient.setAccessInfo(requestDto.getApiKey(), requestDto.getSecretKey());
-        String response = apiClient.callApi(USER_ORDER_CANCEL_URL, params);
-        return ServerResponse.ok().body(Mono.just(response), String.class);
+        return Mono.fromCallable(() -> apiClient.callApi(USER_ORDER_CANCEL_URL, params))
+                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(2))
+                        .filter(throwable -> throwable instanceof TimeoutException))
+                .flatMap(response -> ServerResponse.ok().body(Mono.just(response), String.class))
+                .onErrorResume(e -> ServerResponse.status(500).body(Mono.just("Error: " + e.getMessage()), String.class));
     }
 }

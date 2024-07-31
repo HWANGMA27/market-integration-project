@@ -6,8 +6,11 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import prj.blockchain.bithumb.dto.PrivateRequestDto;
 import prj.blockchain.bithumb.util.ApiClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.HashMap;
+import java.util.concurrent.TimeoutException;
 
 @Component
 public class PrivateRequestHandler {
@@ -37,8 +40,11 @@ public class PrivateRequestHandler {
         HashMap<String, String> params = new HashMap<>();
         params.put("order_currency", requestDto.getOrderCurrency());
         apiClient.setAccessInfo(requestDto.getApiKey(), requestDto.getSecretKey());
-        String response = apiClient.callApi(USER_INFO_URL, params);
-        return ServerResponse.ok().body(Mono.just(response), String.class);
+        return Mono.fromCallable(() -> apiClient.callApi(USER_INFO_URL, params))
+                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(2))
+                        .filter(throwable -> throwable instanceof TimeoutException))
+                .flatMap(response -> ServerResponse.ok().body(Mono.just(response), String.class))
+                .onErrorResume(e -> ServerResponse.status(500).body(Mono.just("Error: " + e.getMessage()), String.class));
     }
 
 
@@ -48,8 +54,11 @@ public class PrivateRequestHandler {
         params.put("order_currency", requestDto.getOrderCurrency());
         params.put("payment_currency", requestDto.getOrderCurrency());
         apiClient.setAccessInfo(requestDto.getApiKey(), requestDto.getSecretKey());
-        String response = apiClient.callApi(USER_TRANSACTIONS_URL, params);
-        return ServerResponse.ok().body(Mono.just(response), String.class);
+        return Mono.fromCallable(() -> apiClient.callApi(USER_TRANSACTIONS_URL, params))
+                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(2))
+                        .filter(throwable -> throwable instanceof TimeoutException))
+                .flatMap(response -> ServerResponse.ok().body(Mono.just(response), String.class))
+                .onErrorResume(e -> ServerResponse.status(500).body(Mono.just("Error: " + e.getMessage()), String.class));
     }
 
     public Mono<ServerResponse> getOrderList(ServerRequest request) {
@@ -58,8 +67,11 @@ public class PrivateRequestHandler {
         HashMap<String, String> params = new HashMap<>();
         params.put("order_currency", cryptocurrency);
         apiClient.setAccessInfo(requestDto.getApiKey(), requestDto.getSecretKey());
-        String response = apiClient.callApi(USER_ORDER_URL, params);
-        return ServerResponse.ok().body(Mono.just(response), String.class);
+        return Mono.fromCallable(() -> apiClient.callApi(USER_ORDER_URL, params))
+                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(2))
+                        .filter(throwable -> throwable instanceof TimeoutException))
+                .flatMap(response -> ServerResponse.ok().body(Mono.just(response), String.class))
+                .onErrorResume(e -> ServerResponse.status(500).body(Mono.just("Error: " + e.getMessage()), String.class));
     }
 
     public Mono<ServerResponse> getOrderDetail(ServerRequest request) {
@@ -70,8 +82,11 @@ public class PrivateRequestHandler {
         params.put("order_id", orderId);
         params.put("order_currency", cryptocurrency);
         apiClient.setAccessInfo(requestDto.getApiKey(), requestDto.getSecretKey());
-        String response = apiClient.callApi(USER_ORDER_DETAIl_URL, params);
-        return ServerResponse.ok().body(Mono.just(response), String.class);
+        return Mono.fromCallable(() -> apiClient.callApi(USER_ORDER_DETAIl_URL, params))
+                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(2))
+                        .filter(throwable -> throwable instanceof TimeoutException))
+                .flatMap(response -> ServerResponse.ok().body(Mono.just(response), String.class))
+                .onErrorResume(e -> ServerResponse.status(500).body(Mono.just("Error: " + e.getMessage()), String.class));
     }
 
     public Mono<ServerResponse> getBalanceInfo(ServerRequest request) {
@@ -80,7 +95,10 @@ public class PrivateRequestHandler {
         HashMap<String, String> params = new HashMap<>();
         params.put("currency", cryptocurrency);
         apiClient.setAccessInfo(requestDto.getApiKey(), requestDto.getSecretKey());
-        String response = apiClient.callApi(USER_BALANCE_URL, params);
-        return ServerResponse.ok().body(Mono.just(response), String.class);
+        return Mono.fromCallable(() -> apiClient.callApi(USER_BALANCE_URL, params))
+                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(2))
+                        .filter(throwable -> throwable instanceof TimeoutException))
+                .flatMap(response -> ServerResponse.ok().body(Mono.just(response), String.class))
+                .onErrorResume(e -> ServerResponse.status(500).body(Mono.just("Error: " + e.getMessage()), String.class));
     }
 }
