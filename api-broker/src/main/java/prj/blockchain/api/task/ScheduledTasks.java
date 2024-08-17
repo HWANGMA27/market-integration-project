@@ -44,19 +44,14 @@ public class ScheduledTasks {
     }
 
     public void executeGetNetworkData() {
-        log.info(this.getClass() + " executed");
         networkService.deleteAllAndSaveNetworkData(targetNetwork);
-        log.info(this.getClass() + " finished");
     }
 
     public void executeGetCurrencyData() {
-        log.info(this.getClass() + " executed");
         currencyService.deleteAllAndSaveCurrencyData();
-        log.info(this.getClass() + " finished");
     }
 
     public void executeGetDailyUserBalance() {
-        log.info(this.getClass() + " executed");
         List<User> allUser = userService.findAllUser();
         for (User user: allUser) {
             try {
@@ -65,6 +60,5 @@ public class ScheduledTasks {
                     log.error(e.getMessage());
                 }
         }
-        log.info(this.getClass() + " finished");
     }
 }

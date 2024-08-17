@@ -9,7 +9,6 @@ import prj.blockchain.api.service.BalanceHistoryService;
 import prj.blockchain.api.service.CurrencyService;
 import prj.blockchain.api.service.NetworkService;
 import prj.blockchain.api.service.UserService;
-import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
@@ -27,13 +26,11 @@ public class ManualExecController {
 
     @GetMapping("/networks")
     public void manualNetworkFetching() {
-        log.info(this.getClass() + " executed");
         networkService.deleteAllAndSaveNetworkData(targetNetwork);
     }
 
     @GetMapping("/currencies")
     public void manualCurrencyFetching() {
-        log.info(this.getClass() + " executed");
         currencyService.deleteAllAndSaveCurrencyData();
     }
 
@@ -50,12 +47,6 @@ public class ManualExecController {
     @GetMapping("/user/{id}/balance/{currency}")
     private void getBalance(@PathVariable Long id, @PathVariable String currency) {
         Optional<User> user = userService.findUser(id);
-        if(user.isPresent()){
-            try {
-                balanceHistoryService.saveUserBalanceHistory(user.get(), currency);
-            } catch (Exception e) {
-                log.error(e.getMessage());
-            }
-        }
+        user.ifPresent(value -> balanceHistoryService.saveUserBalanceHistory(value, currency));
     }
 }
